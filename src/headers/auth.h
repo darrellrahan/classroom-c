@@ -12,5 +12,6 @@ bool register_teacher();
 bool register_student();
 bool login_teacher();
 bool login_student();
+char* get_password();
 
 #endif
