@@ -14,5 +14,7 @@ void teacher_review_requests(Course *course);
 void teacher_topic_detail(Course *course, Topic *topic);
 void teacher_manage_assignments(Course *course, Topic *topic);
 void teacher_grade_submissions(Assignment *assignment);
+void teacher_manage_materials(Course *course, Topic *topic);
+void teacher_manage_announcements(Course *course, Topic *topic);
 
 #endif

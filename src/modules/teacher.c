@@ -378,3 +378,100 @@ void teacher_review_requests(Course *course) {
     printf("No more requests to review.\n");
     pause_screen();
 }
+
+void teacher_manage_materials(Course *course, Topic *topic) {
+    int choice;
+    do {
+        clear_screen();
+        printf("=== MATERIALS: %s ===\n", topic->title);
+        
+        Material *temp = topic->materials;
+        int count = 1;
+        while(temp) {
+            printf("%d. %s\n", count++, temp->title);
+            temp = temp->next;
+        }
+        
+        printf("%d. Create New Material\n", count);
+        printf("0. Back\n");
+        printf("Choice: ");
+        scanf("%d", &choice);
+        
+        if(choice == 0) return;
+        if(choice == count) {
+            // Create new material
+            Material *new_material = (Material*)malloc(sizeof(Material));
+            if(new_material) {
+                new_material->material_id = next_material_id++;
+                new_material->course_id = course->course_id;
+                new_material->topic_id = topic->topic_id;
+                
+                printf("Enter material title: ");
+                getchar();
+                fgets(new_material->title, MAX_STRING, stdin);
+                new_material->title[strcspn(new_material->title, "\n")] = 0;
+                
+                printf("Enter description: ");
+                fgets(new_material->description, MAX_STRING, stdin);
+                new_material->description[strcspn(new_material->description, "\n")] = 0;
+                
+                printf("Enter material URL: ");
+                scanf("%s", new_material->url);
+                
+                get_current_time(&new_material->created_at);
+                new_material->next = topic->materials;
+                topic->materials = new_material;
+                
+                printf("Material created successfully!\n");
+                pause_screen();
+            }
+        }
+    } while(true);
+}
+
+void teacher_manage_announcements(Course *course, Topic *topic) {
+    int choice;
+    do {
+        clear_screen();
+        printf("=== ANNOUNCEMENTS: %s ===\n", topic->title);
+        
+        Announcement *temp = topic->announcements;
+        int count = 1;
+        while(temp) {
+            printf("%d. %s\n", count++, temp->title);
+            temp = temp->next;
+        }
+        
+        printf("%d. Create New Announcement\n", count);
+        printf("0. Back\n");
+        printf("Choice: ");
+        scanf("%d", &choice);
+        
+        if(choice == 0) return;
+        if(choice == count) {
+            // Create new announcement
+            Announcement *new_announcement = (Announcement*)malloc(sizeof(Announcement));
+            if(new_announcement) {
+                new_announcement->announcement_id = next_announcement_id++;
+                new_announcement->course_id = course->course_id;
+                new_announcement->topic_id = topic->topic_id;
+                
+                printf("Enter announcement title: ");
+                getchar();
+                fgets(new_announcement->title, MAX_STRING, stdin);
+                new_announcement->title[strcspn(new_announcement->title, "\n")] = 0;
+                
+                printf("Enter description: ");
+                fgets(new_announcement->description, MAX_STRING, stdin);
+                new_announcement->description[strcspn(new_announcement->description, "\n")] = 0;
+                
+                get_current_time(&new_announcement->created_at);
+                new_announcement->next = topic->announcements;
+                topic->announcements = new_announcement;
+                
+                printf("Announcement created successfully!\n");
+                pause_screen();
+            }
+        }
+    } while(true);
+}
