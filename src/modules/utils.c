@@ -78,3 +78,72 @@ Assignment* find_assignment_by_id(int assignment_id) {
     return NULL;
 }
 
+void get_current_time(Timestamp *ts) {
+    time_t now = time(0);
+    struct tm *local = localtime(&now);
+    ts->day = local->tm_mday;
+    ts->month = local->tm_mon + 1;
+    ts->year = local->tm_year + 1900;
+    ts->hour = local->tm_hour;
+    ts->minute = local->tm_min;
+}
+
+void print_timestamp(Timestamp ts) {
+    printf("%02d-%02d-%d %02d:%02d", ts.day, ts.month, ts.year, ts.hour, ts.minute);
+}
+
+bool is_deadline_passed(Timestamp deadline) {
+    Timestamp now;
+    get_current_time(&now);
+    
+    if(now.year > deadline.year) return true;
+    if(now.year < deadline.year) return false;
+    
+    if(now.month > deadline.month) return true;
+    if(now.month < deadline.month) return false;
+    
+    if(now.day > deadline.day) return true;
+    if(now.day < deadline.day) return false;
+    
+    if(now.hour > deadline.hour) return true;
+    if(now.hour < deadline.hour) return false;
+    
+    return now.minute > deadline.minute;
+}
+
+bool validate_url(char *url) {
+    // Simple URL validation - check if it contains http:// or https://
+    return (strstr(url, "http://") == url || strstr(url, "https://") == url);
+}
+
+bool is_student_enrolled(Course *course, int student_id) {
+    Student *temp = course->enrolled_students;
+    while(temp) {
+        if(temp->student_id == student_id) {
+            return true;
+        }
+        temp = temp->next;
+    }
+    return false;
+}
+
+bool has_student_submitted(Assignment *assignment, int student_id) {
+    // Check in both graded and not graded submissions
+    Submission *temp = assignment->graded_submissions;
+    while(temp) {
+        if(temp->student_id == student_id) {
+            return true;
+        }
+        temp = temp->next;
+    }
+    
+    temp = assignment->not_graded_submissions;
+    while(temp) {
+        if(temp->student_id == student_id) {
+            return true;
+        }
+        temp = temp->next;
+    }
+    
+    return false;
+}
