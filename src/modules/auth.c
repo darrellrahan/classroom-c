@@ -16,8 +16,19 @@ bool register_teacher() {
     
     new_teacher->teacher_id = next_teacher_id++;
     
-    printf("Enter unique number: ");
-    scanf("%s", new_teacher->teacher_unique_number);
+    do {
+        printf("Enter unique number: ");
+        scanf("%s", new_teacher->teacher_unique_number);
+        
+        if(is_unique_number_taken(new_teacher->teacher_unique_number)) {
+            printf("This unique number is already taken. Please try another one.\n");
+            pause_screen();
+            clear_screen();
+            printf("=== TEACHER REGISTRATION ===\n");
+        } else {
+            break;
+        }
+    } while(true);
     
     printf("Enter name: ");
     getchar(); // consume newline
@@ -48,8 +59,19 @@ bool register_student() {
     
     new_student->student_id = next_student_id++;
     
-    printf("Enter unique number: ");
-    scanf("%s", new_student->student_unique_number);
+    do {
+        printf("Enter unique number: ");
+        scanf("%s", new_student->student_unique_number);
+        
+        if(is_unique_number_taken(new_student->student_unique_number)) {
+            printf("This unique number is already taken. Please try another one.\n");
+            pause_screen();
+            clear_screen();
+            printf("=== STUDENT REGISTRATION ===\n");
+        } else {
+            break;
+        }
+    } while(true);
     
     printf("Enter name: ");
     getchar(); // consume newline

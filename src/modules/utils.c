@@ -147,3 +147,25 @@ bool has_student_submitted(Assignment *assignment, int student_id) {
     
     return false;
 }
+
+bool is_unique_number_taken(char *unique_number) {
+    // Check in students
+    Student *student = students_head;
+    while(student) {
+        if(strcmp(student->student_unique_number, unique_number) == 0) {
+            return true;
+        }
+        student = student->next;
+    }
+    
+    // Check in teachers
+    Teacher *teacher = teachers_head;
+    while(teacher) {
+        if(strcmp(teacher->teacher_unique_number, unique_number) == 0) {
+            return true;
+        }
+        teacher = teacher->next;
+    }
+    
+    return false;
+}

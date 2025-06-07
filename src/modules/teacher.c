@@ -42,8 +42,32 @@ void teacher_course_menu() {
                 fgets(new_course->name, MAX_STRING, stdin);
                 new_course->name[strcspn(new_course->name, "\n")] = 0;
                 
-                printf("Enter course code: ");
-                scanf("%s", new_course->code);
+                do {
+                    printf("Enter course code: ");
+                    scanf("%s", new_course->code);
+                    
+                    if(find_course_by_code(new_course->code)) {
+                        printf("This course code is already taken. Please try another one.\n");
+                        pause_screen();
+                        clear_screen();
+                        printf("=== COURSE MANAGEMENT ===\n");
+                        printf("Your Courses:\n");
+                        temp = courses_head;
+                        count = 1;
+                        while(temp) {
+                            if(temp->teacher_id == current_teacher->teacher_id) {
+                                printf("%d. %s (Code: %s)\n", count++, temp->name, temp->code);
+                            }
+                            temp = temp->next;
+                        }
+                        printf("\n%d. Create New Course\n", count);
+                        printf("0. Back\n");
+                        printf("Choice: %d\n", choice);
+                        printf("Enter course name: %s\n", new_course->name);
+                    } else {
+                        break;
+                    }
+                } while(true);
                 
                 printf("Enter description: ");
                 getchar();
