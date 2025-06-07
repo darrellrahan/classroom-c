@@ -169,3 +169,23 @@ bool is_unique_number_taken(char *unique_number) {
     
     return false;
 }
+
+// Simple hash function for passwords
+void hash_password(const char *input, char *output) {
+    unsigned long hash = 5381;
+    int c;
+    
+    // DJB2 hash algorithm
+    while ((c = *input++)) {
+        hash = ((hash << 5) + hash) + c; // hash * 33 + c
+    }
+    
+    // Convert hash to hex string
+    sprintf(output, "%lx", hash);
+}
+
+bool verify_password(const char *input, const char *hashed) {
+    char input_hash[MAX_PASSWORD];
+    hash_password(input, input_hash);
+    return strcmp(input_hash, hashed) == 0;
+}

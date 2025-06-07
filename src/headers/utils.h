@@ -22,5 +22,7 @@ bool validate_url(char *url);
 bool is_student_enrolled(Course *course, int student_id);
 bool has_student_submitted(Assignment *assignment, int student_id);
 bool is_unique_number_taken(char *unique_number);
+void hash_password(const char *input, char *output);
+bool verify_password(const char *input, const char *hashed);
 
 #endif

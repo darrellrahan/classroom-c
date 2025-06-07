@@ -42,7 +42,9 @@ bool register_teacher() {
     scanf("%s", new_teacher->phone_number);
     
     printf("Create password: ");
-    strcpy(new_teacher->password, get_password());
+    char plain_password[MAX_PASSWORD];
+    strcpy(plain_password, get_password());
+    hash_password(plain_password, new_teacher->password);
     
     new_teacher->next = teachers_head;
     teachers_head = new_teacher;
@@ -85,7 +87,9 @@ bool register_student() {
     scanf("%s", new_student->phone_number);
     
     printf("Create password: ");
-    strcpy(new_student->password, get_password());
+    char plain_password[MAX_PASSWORD];
+    strcpy(plain_password, get_password());
+    hash_password(plain_password, new_student->password);
     
     new_student->next = students_head;
     students_head = new_student;
@@ -108,7 +112,7 @@ bool login_teacher() {
     Teacher *temp = teachers_head;
     while(temp) {
         if(strcmp(temp->teacher_unique_number, unique_num) == 0 && 
-           strcmp(temp->password, password) == 0) {
+           verify_password(password, temp->password)) {
             current_teacher = temp;
             printf("Login successful! Welcome %s\n", temp->name);
             pause_screen();
@@ -137,7 +141,7 @@ bool login_student() {
     Student *temp = students_head;
     while(temp) {
         if(strcmp(temp->student_unique_number, unique_num) == 0 && 
-           strcmp(temp->password, password) == 0) {
+           verify_password(password, temp->password)) {
             current_student = temp;
             printf("Login successful! Welcome %s\n", temp->name);
             pause_screen();

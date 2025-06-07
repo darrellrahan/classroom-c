@@ -86,8 +86,7 @@ void teacher_dashboard() {
         printf("Welcome, %s!\n\n", current_teacher->name);
         printf("1. Manage Courses\n");
         printf("2. Account Settings\n");
-        printf("3. Logout\n");
-        printf("0. Back\n");
+        printf("0. Logout\n");
         printf("Choice: ");
         scanf("%d", &choice);
         
@@ -105,8 +104,6 @@ void teacher_dashboard() {
                 printf("\n1. Back to Dashboard\n");
                 scanf("%d", &choice);
                 break;
-            case 3:
-                return;
             case 0:
                 return;
             default:
@@ -136,12 +133,11 @@ void student_dashboard() {
         
         printf("\n%d. Join New Course\n", count);
         printf("%d. Account Settings\n", count + 1);
-        printf("%d. Logout\n", count + 2);
-        printf("0. Back\n");
+        printf("0. Logout\n");
         printf("Choice: ");
         scanf("%d", &choice);
         
-        if(choice == 0 || choice == count + 2) return;
+        if(choice == 0) return;
         
         if(choice == count) {
             // Join new course
