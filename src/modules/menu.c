@@ -98,7 +98,7 @@ void teacher_dashboard() {
                 clear_screen();
                 printf("=== ACCOUNT SETTINGS ===\n");
                 printf("Name: %s\n", current_teacher->name);
-                printf("Unique Number: %s\n", current_teacher->teacher_unique_number);
+                printf("Unique Number (NUPTK/NIDN): %s\n", current_teacher->teacher_unique_number);
                 printf("Email: %s\n", current_teacher->email);
                 printf("Phone: %s\n", current_teacher->phone_number);
                 printf("\n1. Back to Dashboard\n");
@@ -166,7 +166,7 @@ void student_dashboard() {
             clear_screen();
             printf("=== ACCOUNT SETTINGS ===\n");
             printf("Name: %s\n", current_student->name);
-            printf("Unique Number: %s\n", current_student->student_unique_number);
+            printf("Unique Number (NISN/NIM): %s\n", current_student->student_unique_number);
             printf("Email: %s\n", current_student->email);
             printf("Phone: %s\n", current_student->phone_number);
             printf("\n1. Back to Dashboard\n");

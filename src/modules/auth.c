@@ -17,7 +17,7 @@ bool register_teacher() {
     new_teacher->teacher_id = next_teacher_id++;
     
     do {
-        printf("Enter unique number: ");
+        printf("Enter unique number (NUPTK/NIDN): ");
         scanf("%s", new_teacher->teacher_unique_number);
         
         if(is_unique_number_taken(new_teacher->teacher_unique_number)) {
@@ -62,7 +62,7 @@ bool register_student() {
     new_student->student_id = next_student_id++;
     
     do {
-        printf("Enter unique number: ");
+        printf("Enter unique number (NISN/NIM): ");
         scanf("%s", new_student->student_unique_number);
         
         if(is_unique_number_taken(new_student->student_unique_number)) {
@@ -103,7 +103,7 @@ bool login_teacher() {
     
     clear_screen();
     printf("=== TEACHER LOGIN ===\n");
-    printf("Enter unique number: ");
+    printf("Enter unique number (NUPTK/NIDN): ");
     scanf("%s", unique_num);
     
     printf("Enter password: ");
@@ -132,7 +132,7 @@ bool login_student() {
     
     clear_screen();
     printf("=== STUDENT LOGIN ===\n");
-    printf("Enter unique number: ");
+    printf("Enter unique number (NISN/NIM): ");
     scanf("%s", unique_num);
     
     printf("Enter password: ");

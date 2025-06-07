@@ -372,7 +372,7 @@ void teacher_review_requests(Course *course) {
         Student *student = course->waitlist_students;
         printf("Student Information:\n");
         printf("Name: %s\n", student->name);
-        printf("Unique Number: %s\n", student->student_unique_number);
+        printf("Unique Number (NISN/NIM): %s\n", student->student_unique_number);
         printf("Email: %s\n", student->email);
         printf("Phone: %s\n", student->phone_number);
         
