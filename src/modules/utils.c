@@ -148,6 +148,29 @@ bool has_student_submitted(Assignment *assignment, int student_id) {
     return false;
 }
 
+bool has_student_graded(Assignment *assignment, int student_id) {
+    // Check in graded submissions only
+    Submission *temp = assignment->graded_submissions;
+    while(temp) {
+        if(temp->student_id == student_id) {
+            return true;
+        }
+        temp = temp->next;
+    }
+    return false;
+}
+
+int get_student_grade(Assignment *assignment, int student_id) {
+    Submission *temp = assignment->graded_submissions;
+    while(temp) {
+        if(temp->student_id == student_id) {
+            return temp->grade;
+        }
+        temp = temp->next;
+    }
+    return -1; // Not graded
+} 
+
 bool is_unique_number_taken(char *unique_number) {
     // Check in students
     Student *student = students_head;

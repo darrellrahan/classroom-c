@@ -108,9 +108,14 @@ void student_view_assignments(Course *course, Topic *topic) {
             // Check status
             bool submitted = has_student_submitted(temp, current_student->student_id);
             bool overdue = is_deadline_passed(temp->deadline);
+            bool graded = has_student_graded(temp, current_student->student_id);
             
             if(submitted) {
-                printf(" [SUBMITTED]");
+                if (graded) {
+                    printf(" [GRADED: %d]", get_student_grade(temp, current_student->student_id));
+                } else {
+                    printf(" [SUBMITTED]");
+                }
             } else if(overdue) {
                 printf(" [OVERDUE]");
             } else {
