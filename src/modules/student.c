@@ -22,6 +22,7 @@ void student_topic_menu(Course *course) {
         }
         
         printf("0. Back\n");
+        printf("\n");
         printf("Choice: ");
         scanf("%d", &choice);
         
@@ -50,6 +51,7 @@ void student_topic_detail(Course *course, Topic *topic) {
         printf("2. See Materials\n");
         printf("3. See Announcements\n");
         printf("0. Back\n");
+        printf("\n");
         printf("Choice: ");
         scanf("%d", &choice);
         

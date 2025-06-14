@@ -134,8 +134,10 @@ void teacher_manage_topics(Course *course) {
             temp = temp->next;
         }
         
+        printf("\n");
         printf("%d. Create New Topic\n", count);
         printf("0. Back\n");
+        printf("\n");
         printf("Choice: ");
         scanf("%d", &choice);
         
@@ -192,6 +194,7 @@ void teacher_topic_detail(Course *course, Topic *topic) {
         printf("2. Manage Announcements\n");
         printf("3. Manage Assignments\n");
         printf("0. Back\n");
+        printf("\n");
         printf("Choice: ");
         scanf("%d", &choice);
         
@@ -226,8 +229,10 @@ void teacher_manage_assignments(Course *course, Topic *topic) {
             temp = temp->next;
         }
         
+        printf("\n");
         printf("%d. Create New Assignment\n", count);
         printf("0. Back\n");
+        printf("\n");
         printf("Choice: ");
         scanf("%d", &choice);
         
@@ -274,6 +279,7 @@ void teacher_manage_assignments(Course *course, Topic *topic) {
                         printf("2. View Graded Submissions\n");
                         printf("3. Start Grading\n");
                         printf("0. Back\n");
+                        printf("\n");
                         printf("Choice: ");
                         scanf("%d", &sub_choice);
                         
@@ -422,8 +428,10 @@ void teacher_manage_materials(Course *course, Topic *topic) {
             temp = temp->next;
         }
         
+        printf("\n");
         printf("%d. Create New Material\n", count);
         printf("0. Back\n");
+        printf("\n");
         printf("Choice: ");
         scanf("%d", &choice);
         
@@ -473,8 +481,10 @@ void teacher_manage_announcements(Course *course, Topic *topic) {
             temp = temp->next;
         }
         
+        printf("\n");
         printf("%d. Create New Announcement\n", count);
         printf("0. Back\n");
+        printf("\n");
         printf("Choice: ");
         scanf("%d", &choice);
         
