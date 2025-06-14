@@ -187,5 +187,6 @@ void student_submit_assignment(Assignment *assignment) {
     // Add to not graded submissions queue
     enqueue_submission(&assignment->not_graded_submissions, new_submission);
     
+    save_courses();
     printf("Assignment submitted successfully!\n");
 }

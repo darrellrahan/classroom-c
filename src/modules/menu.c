@@ -153,6 +153,7 @@ void student_dashboard() {
                     *new_waitlist = *current_student;
                     new_waitlist->next = course->waitlist_students;
                     course->waitlist_students = new_waitlist;
+                    save_courses();
                     printf("Join request sent! Waiting for teacher approval.\n");
                 } else {
                     printf("You are already enrolled in this course!\n");

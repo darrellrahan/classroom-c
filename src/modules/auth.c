@@ -49,6 +49,8 @@ bool register_teacher() {
     new_teacher->next = teachers_head;
     teachers_head = new_teacher;
     
+    save_teachers();
+    
     return true;
 }
 
@@ -93,6 +95,8 @@ bool register_student() {
     
     new_student->next = students_head;
     students_head = new_student;
+    
+    save_students();
     
     return true;
 }

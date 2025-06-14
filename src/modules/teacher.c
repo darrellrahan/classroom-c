@@ -80,6 +80,7 @@ void teacher_course_menu() {
                 new_course->next = courses_head;
                 courses_head = new_course;
                 
+                save_courses();
                 printf("Course created successfully!\n");
                 pause_screen();
             }
@@ -162,6 +163,7 @@ void teacher_manage_topics(Course *course) {
                 new_topic->next = course->topics;
                 course->topics = new_topic;
                 
+                save_courses();
                 printf("Topic created successfully!\n");
                 pause_screen();
             }
@@ -254,6 +256,7 @@ void teacher_manage_assignments(Course *course, Topic *topic) {
                 new_assignment->next = topic->assignments;
                 topic->assignments = new_assignment;
                 
+                save_courses();
                 printf("Assignment created successfully!\n");
                 pause_screen();
             }
@@ -342,6 +345,7 @@ void teacher_grade_submissions(Assignment *assignment) {
             // Move to graded queue
             enqueue_submission(&assignment->graded_submissions, current_sub);
             
+            save_courses();
             printf("Grade submitted successfully!\n");
         } else {
             printf("Invalid grade! Please enter a value between 0-100.\n");
@@ -385,10 +389,12 @@ void teacher_review_requests(Course *course) {
             course->waitlist_students = student->next;
             student->next = course->enrolled_students;
             course->enrolled_students = student;
+            save_courses();
             printf("Student accepted!\n");
         } else if(choice == 2) {
             // Decline student
             course->waitlist_students = student->next;
+            save_courses();
             printf("Student declined!\n");
         } else {
             return;
@@ -446,6 +452,7 @@ void teacher_manage_materials(Course *course, Topic *topic) {
                 new_material->next = topic->materials;
                 topic->materials = new_material;
                 
+                save_courses();
                 printf("Material created successfully!\n");
                 pause_screen();
             }
@@ -493,6 +500,7 @@ void teacher_manage_announcements(Course *course, Topic *topic) {
                 new_announcement->next = topic->announcements;
                 topic->announcements = new_announcement;
                 
+                save_courses();
                 printf("Announcement created successfully!\n");
                 pause_screen();
             }
