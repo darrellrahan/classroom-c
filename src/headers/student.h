@@ -13,4 +13,6 @@ void student_topic_detail(Course *course, Topic *topic);
 void student_view_assignments(Course *course, Topic *topic);
 void student_submit_assignment(Assignment *assignment);
 
+void student_see_other_students(Course *course);
+
 #endif

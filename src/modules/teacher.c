@@ -96,17 +96,21 @@ void teacher_course_menu() {
                         do {
                             clear_screen();
                             printf("=== COURSE: %s ===\n", temp->name);
-                            printf("1. See and Manage Topics\n");
-                            printf("2. Review Requests\n");
+                            printf("1. See Students\n");
+                            printf("2. See and Manage Topics\n");
+                            printf("3. Review Requests (%d)\n", count_waitinglist_student(temp));
                             printf("0. Back\n");
                             printf("Choice: ");
                             scanf("%d", &sub_choice);
                             
                             switch(sub_choice) {
                                 case 1:
-                                    teacher_manage_topics(temp);
+                                    teacher_see_students(temp);
                                     break;
                                 case 2:
+                                    teacher_manage_topics(temp);
+                                    break;
+                                case 3:
                                     teacher_review_requests(temp);
                                     break;
                             }
@@ -119,6 +123,25 @@ void teacher_course_menu() {
             }
         }
     } while(true);
+}
+
+void teacher_see_students(Course *course) {
+    clear_screen();
+    printf("=== STUDENTS ENROLLED IN: %s (%d) ===\n", course->name, count_enrolled_student(course));
+    
+    Student *temp = course->enrolled_students;
+    if(!temp) {
+        printf("No students enrolled in this course.\n");
+    } else {
+        while(temp) {
+            printf("Name: %s, Unique Number (NIS(N)/NIM): %s, Email: %s, Phone: %s\n",
+                   temp->name, temp->student_unique_number, temp->email, temp->phone_number);
+            temp = temp->next;
+        }
+    }
+    
+    pause_screen();
+    
 }
 
 void teacher_manage_topics(Course *course) {
@@ -275,8 +298,8 @@ void teacher_manage_assignments(Course *course, Topic *topic) {
                     do {
                         clear_screen();
                         printf("=== ASSIGNMENT: %s ===\n", temp->title);
-                        printf("1. View Not Graded Submissions\n");
-                        printf("2. View Graded Submissions\n");
+                        printf("1. View Not Graded Submissions (%d)\n", count_notgraded_submissions(temp));
+                        printf("2. View Graded Submissions (%d)\n", count_graded_submissions(temp));
                         printf("3. Start Grading\n");
                         printf("0. Back\n");
                         printf("\n");

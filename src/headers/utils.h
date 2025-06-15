@@ -26,5 +26,9 @@ int get_student_grade(Assignment *assignment, int student_id);
 bool is_unique_number_taken(char *unique_number);
 void hash_password(const char *input, char *output);
 bool verify_password(const char *input, const char *hashed);
+int count_enrolled_student(Course *course);
+int count_waitinglist_student(Course *course);
+int count_graded_submissions(Assignment *assignment);
+int count_notgraded_submissions(Assignment *assignment);
 
 #endif

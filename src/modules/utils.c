@@ -212,3 +212,44 @@ bool verify_password(const char *input, const char *hashed) {
     hash_password(input, input_hash);
     return strcmp(input_hash, hashed) == 0;
 }
+
+// Counting functions
+int count_enrolled_student(Course *course) {
+    int count = 0;
+    Student *temp = course->enrolled_students;
+    while(temp) {
+        count++;
+        temp = temp->next;
+    }
+    return count;
+}
+
+int count_waitinglist_student(Course *course) {
+    int count = 0;
+    Student *temp = course->waitlist_students;
+    while(temp) {
+        count++;
+        temp = temp->next;
+    }
+    return count;
+}
+
+int count_graded_submissions(Assignment *assignment) {
+    int count = 0;
+    Submission *temp = assignment->graded_submissions;
+    while(temp) {
+        count++;
+        temp = temp->next;
+    }
+    return count;
+}
+
+int count_notgraded_submissions(Assignment *assignment) {
+    int count = 0;
+    Submission *temp = assignment->not_graded_submissions;
+    while(temp) {
+        count++;
+        temp = temp->next;
+    }
+    return count;
+}

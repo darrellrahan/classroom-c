@@ -17,4 +17,5 @@ void teacher_grade_submissions(Assignment *assignment);
 void teacher_manage_materials(Course *course, Topic *topic);
 void teacher_manage_announcements(Course *course, Topic *topic);
 
+void teacher_see_students(Course *course);
 #endif

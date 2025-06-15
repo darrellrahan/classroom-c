@@ -12,10 +12,13 @@ void student_topic_menu(Course *course) {
     do {
         clear_screen();
         printf("=== COURSE: %s ===\n", course->name);
+
+        printf("1. See Other Students\n");
+        printf("\n");
+
         printf("Topics:\n");
-        
         Topic *temp = course->topics;
-        int count = 1;
+        int count = 2;
         while(temp) {
             printf("%d. %s\n", count++, temp->title);
             temp = temp->next;
@@ -26,11 +29,16 @@ void student_topic_menu(Course *course) {
         printf("Choice: ");
         scanf("%d", &choice);
         
+        if (choice == 1) {
+            student_see_other_students(course);
+            continue;
+        }
+
         if(choice == 0) return;
         
         // Select topic
         temp = course->topics;
-        int current_count = 1;
+        int current_count = 2;
         while(temp) {
             if(current_count == choice) {
                 student_topic_detail(course, temp);
@@ -40,6 +48,24 @@ void student_topic_menu(Course *course) {
             temp = temp->next;
         }
     } while(true);
+}
+
+void student_see_other_students(Course *course) {
+    clear_screen();
+    printf("=== ENROLLED STUDENTS (%d) ===\n", count_enrolled_student(course));
+    
+    Student *temp = course->enrolled_students;
+    if(!temp) {
+        printf("No students enrolled in this course.\n");
+    } else {
+        while(temp) {
+            printf("ID: %d, Name: %s, Unique Number: %s\n", 
+                   temp->student_id, temp->name, temp->student_unique_number);
+            temp = temp->next;
+        }
+    }
+    
+    pause_screen();
 }
 
 void student_topic_detail(Course *course, Topic *topic) {
