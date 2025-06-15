@@ -247,6 +247,17 @@ void student_dashboard() {
 
 **************************************************/
 
+void student_see_account() {
+    clear_screen();
+    printf("=== ACCOUNT ===\n");
+    printf("Name: %s\n", current_student->name);
+    printf("Unique Number (NISN/NIM): %s\n", current_student->student_unique_number);
+    printf("Email: %s\n", current_student->email);
+    printf("Phone: %s\n", current_student->phone_number);
+    printf("\n1. Back to Dashboard\n");
+    pause_screen();
+}
+
 void student_topic_menu(Course *course) {
     int choice;
     do {
@@ -337,6 +348,37 @@ void student_topic_detail(Topic *topic) {
                 return;
         }
     } while(choice != 0);
+}
+
+void student_view_materials(Topic *topic) {
+    clear_screen();
+    printf("=== MATERIALS: %s ===\n", topic->title);
+    Material *mat = topic->materials;
+    while(mat) {
+        printf("Title: %s\n", mat->title);
+        printf("Description: %s\n", mat->description);
+        printf("URL: %s\n", mat->url);
+        printf("Created at: ");
+        print_timestamp(mat->created_at);
+        printf("\n\n");
+        mat = mat->next;
+    }
+    pause_screen();
+}
+
+void student_view_announcements(Topic *topic) {
+    clear_screen();
+    printf("=== ANNOUNCEMENTS: %s ===\n", topic->title);
+    Announcement *ann = topic->announcements;
+    while(ann) {
+        printf("Title: %s\n", ann->title);
+        printf("Description: %s\n", ann->description);
+        printf("Created at: ");
+        print_timestamp(ann->created_at);
+        printf("\n\n");
+        ann = ann->next;
+    }
+    pause_screen();
 }
 
 void student_view_assignments(Topic *topic) {
@@ -446,6 +488,17 @@ void student_submit_assignment(Assignment *assignment) {
                     TEACHER MENUS
 
 *************************************************/
+
+void teacher_see_account() {
+    clear_screen();
+    printf("=== ACCOUNT ===\n");
+    printf("Name: %s\n", current_teacher->name);
+    printf("Unique Number (NUPTK/NIDN): %s\n", current_teacher->teacher_unique_number);
+    printf("Email: %s\n", current_teacher->email);
+    printf("Phone: %s\n", current_teacher->phone_number);
+    printf("\n1. Back to Dashboard\n");
+    pause_screen();
+}
 
 void teacher_course_menu() {
     int choice;
@@ -770,6 +823,32 @@ void teacher_manage_assignments(Topic *topic) {
     } while(true);
 }
 
+void teacher_show_notgraded_submissions(Assignment *assignment) {
+    clear_screen();
+    printf("=== NOT GRADED SUBMISSIONS ===\n");
+    Submission *sub = assignment->not_graded_submissions;
+    while(sub) {
+        Student *student = find_student_by_id(sub->student_id);
+        printf("Student: %s, URL: %s\n", 
+                student ? student->name : "Unknown", sub->url);
+        sub = sub->next;
+    }
+    pause_screen();
+}
+
+void teacher_show_graded_submissions(Assignment *assignment) {
+    clear_screen();
+    printf("=== GRADED SUBMISSIONS ===\n");
+    Submission *sub = assignment->graded_submissions;
+    while(sub) {
+        Student *student = find_student_by_id(sub->student_id);
+        printf("Student: %s, Grade: %d, URL: %s\n", 
+                student ? student->name : "Unknown", sub->grade, sub->url);
+        sub = sub->next;
+    }
+    pause_screen();
+}
+
 void teacher_grade_submissions(Assignment *assignment) {
     if (assignment == NULL) return;
 
@@ -962,83 +1041,4 @@ void teacher_manage_announcements(Topic *topic) {
             }
         }
     } while(true);
-}
-
-void teacher_see_account() {
-    clear_screen();
-    printf("=== ACCOUNT ===\n");
-    printf("Name: %s\n", current_teacher->name);
-    printf("Unique Number (NUPTK/NIDN): %s\n", current_teacher->teacher_unique_number);
-    printf("Email: %s\n", current_teacher->email);
-    printf("Phone: %s\n", current_teacher->phone_number);
-    printf("\n1. Back to Dashboard\n");
-    pause_screen();
-}
-
-void student_see_account() {
-    clear_screen();
-    printf("=== ACCOUNT ===\n");
-    printf("Name: %s\n", current_student->name);
-    printf("Unique Number (NISN/NIM): %s\n", current_student->student_unique_number);
-    printf("Email: %s\n", current_student->email);
-    printf("Phone: %s\n", current_student->phone_number);
-    printf("\n1. Back to Dashboard\n");
-    pause_screen();
-}
-
-void student_view_materials(Topic *topic) {
-    clear_screen();
-    printf("=== MATERIALS: %s ===\n", topic->title);
-    Material *mat = topic->materials;
-    while(mat) {
-        printf("Title: %s\n", mat->title);
-        printf("Description: %s\n", mat->description);
-        printf("URL: %s\n", mat->url);
-        printf("Created at: ");
-        print_timestamp(mat->created_at);
-        printf("\n\n");
-        mat = mat->next;
-    }
-    pause_screen();
-}
-
-void student_view_announcements(Topic *topic) {
-    clear_screen();
-    printf("=== ANNOUNCEMENTS: %s ===\n", topic->title);
-    Announcement *ann = topic->announcements;
-    while(ann) {
-        printf("Title: %s\n", ann->title);
-        printf("Description: %s\n", ann->description);
-        printf("Created at: ");
-        print_timestamp(ann->created_at);
-        printf("\n\n");
-        ann = ann->next;
-    }
-    pause_screen();
-}
-
-void teacher_show_notgraded_submissions(Assignment *assignment) {
-    clear_screen();
-    printf("=== NOT GRADED SUBMISSIONS ===\n");
-    Submission *sub = assignment->not_graded_submissions;
-    while(sub) {
-        Student *student = find_student_by_id(sub->student_id);
-        printf("Student: %s, URL: %s\n", 
-                student ? student->name : "Unknown", sub->url);
-        sub = sub->next;
-    }
-    pause_screen();
-}
-
-void teacher_show_graded_submissions(Assignment *assignment) {
-    clear_screen();
-    printf("=== GRADED SUBMISSIONS ===\n");
-    Submission *sub = assignment->graded_submissions;
-    while(sub) {
-        Student *student = find_student_by_id(sub->student_id);
-        printf("Student: %s, Grade: %d, URL: %s\n", 
-                student ? student->name : "Unknown", sub->grade, sub->url);
-        sub = sub->next;
-    }
-    pause_screen();
 }
