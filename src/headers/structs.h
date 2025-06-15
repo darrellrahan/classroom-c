@@ -39,6 +39,29 @@
 #define MAX_EMAIL 100
 #define MAX_PASSWORD 50
 #define MAX_UNIQUE_NUM 20
+#define MAX_STACK_SIZE 100
+
+// Navigation String
+#define MAIN_MENU "MAIN_MENU"
+#define REGISTER_MENU "REGISTER_MENU"
+#define LOGIN_MENU "LOGIN_MENU"
+
+#define STUDENT_DASHBOARD "STUDENT_DASHBOARD"
+#define STUDENT_ACCOUNT_SETTINGS "STUDENT_ACCOUNT_SETTINGS"
+#define STUDENT_TOPIC_MENU "STUDENT_TOPIC_MENU"
+#define STUDENT_TOPIC_DETAIL "STUDENT_TOPIC_DETAIL"
+#define STUDENT_VIEW_ASSIGNMENTS "STUDENT_VIEW_ASSIGNMENTS"
+
+#define TEACHER_DASHBOARD "TEACHER_DASHBOARD"
+#define TEACHER_ACCOUNT_SETTINGS "TEACHER_ACCOUNT_SETTINGS"
+#define TEACHER_COURSE_MENU "TEACHER_COURSE_MENU"
+#define TEACHER_MANAGE_TOPICS "TEACHER_MANAGE_TOPICS"
+#define TEACHER_TOPIC_DETAIL "TEACHER_TOPIC_DETAIL"
+#define TEACHER_MANAGE_MATERIALS "TEACHER_MANAGE_MATERIALS"
+#define TEACHER_MANAGE_ANNOUNCEMENTS "TEACHER_MANAGE_ANNOUNCEMENTS"
+#define TEACHER_MANAGE_ASSIGNMENTS "TEACHER_MANAGE_ASSIGNMENTS"
+#define TEACHER_GRADE_SUBMISSIONS "TEACHER_GRADE_SUBMISSIONS"
+#define TEACHER_REVIEW_REQUESTS "TEACHER_REVIEW_REQUESTS"
 
 // Data
 typedef struct {
@@ -55,11 +78,17 @@ typedef struct Submission Submission;
 typedef struct Material Material;
 typedef struct Announcement Announcement;
 
-// Menu stack for navigation
-typedef struct MenuStack {
-    int menu_id;
-    struct MenuStack *next;
-} MenuStack;
+// Stack ADT untuk Navigation
+typedef struct StackNode {
+    char menu_name[MAX_STRING];
+    void* data; // untuk menyimpan data context (course, topic, etc.)
+    struct StackNode* next;
+} StackNode;
+
+typedef struct {
+    StackNode* top;
+    int size;
+} NavigationStack;
 
 // Student
 struct Student {
@@ -163,7 +192,6 @@ struct Announcement {
 extern Student *students_head;
 extern Teacher *teachers_head;
 extern Course *courses_head;
-extern MenuStack *menu_stack;
 extern Student *current_student;
 extern Teacher *current_teacher;
 extern int next_student_id;
