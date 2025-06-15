@@ -22,20 +22,32 @@ void execute_menu(const char* menu_name, void* data) {
     else if (strcmp(menu_name, STUDENT_DASHBOARD) == 0) {
         student_dashboard();
     }
-    else if (strcmp(menu_name, STUDENT_SEE_OTHER_STUDENTS) == 0) {
-        student_see_other_students(data);
-    }
     else if (strcmp(menu_name, STUDENT_ACCOUNT_SETTINGS) == 0) {
         student_account_settings();
     }
+    else if (strcmp(menu_name, STUDENT_SEE_ACCOUNT) == 0) {
+        student_see_account();
+    }
+    else if (strcmp(menu_name, STUDENT_SEE_OTHER_STUDENTS) == 0) {
+        student_see_other_students((Course*)data);
+    }
     else if (strcmp(menu_name, STUDENT_TOPIC_MENU) == 0) {
-        student_topic_menu(data);
+        student_topic_menu((Course*)data);
     }
     else if (strcmp(menu_name, STUDENT_TOPIC_DETAIL) == 0) {
-        student_topic_detail(data);
+        student_topic_detail((Topic*)data);
+    }
+    else if (strcmp(menu_name, STUDENT_VIEW_MATERIALS) == 0) {
+        student_view_materials((Topic*)data);
+    }
+    else if (strcmp(menu_name, STUDENT_VIEW_ANNOUNCEMENTS) == 0) {
+        student_view_announcements((Topic*)data);
     }
     else if (strcmp(menu_name, STUDENT_VIEW_ASSIGNMENTS) == 0) {
-        student_view_assignments(data);
+        student_view_assignments((Topic*)data);
+    }
+    else if (strcmp(menu_name, STUDENT_SUBMIT_ASSIGNMENT) == 0) {
+        student_submit_assignment((Assignment*)data);
     }
     else if (strcmp(menu_name, TEACHER_DASHBOARD) == 0) {
         teacher_dashboard();
@@ -43,32 +55,41 @@ void execute_menu(const char* menu_name, void* data) {
     else if (strcmp(menu_name, TEACHER_ACCOUNT_SETTINGS) == 0) {
         teacher_account_settings();
     }
+    else if (strcmp(menu_name, TEACHER_SEE_ACCOUNT) == 0) {
+        teacher_see_account();
+    }
     else if (strcmp(menu_name, TEACHER_COURSE_MENU) == 0) {
         teacher_course_menu();
     }
     else if (strcmp(menu_name, TEACHER_SEE_STUDENTS) == 0) {
-        teacher_see_students(data);
+        teacher_see_students((Course*)data);
     }
     else if (strcmp(menu_name, TEACHER_MANAGE_TOPICS) == 0) {
-        teacher_manage_topics(data);
+        teacher_manage_topics((Course*)data);
     }
     else if (strcmp(menu_name, TEACHER_TOPIC_DETAIL) == 0) {
-        teacher_topic_detail(data);
-    }
-    else if (strcmp(menu_name, TEACHER_MANAGE_MATERIALS) == 0) {
-        teacher_manage_materials(data);
-    }
-    else if (strcmp(menu_name, TEACHER_MANAGE_ANNOUNCEMENTS) == 0) {
-        teacher_manage_announcements(data);
+        teacher_topic_detail((Topic*)data);
     }
     else if (strcmp(menu_name, TEACHER_MANAGE_ASSIGNMENTS) == 0) {
-        teacher_manage_assignments(data);
+        teacher_manage_assignments((Topic*)data);
+    }
+    else if (strcmp(menu_name, TEACHER_SHOW_NOTGRADED_SUBMISSIONS) == 0) {
+        teacher_show_notgraded_submissions((Assignment*)data);
+    }
+    else if (strcmp(menu_name, TEACHER_SHOW_GRADED_SUBMISSIONS) == 0) {
+        teacher_show_graded_submissions((Assignment*)data);
     }
     else if (strcmp(menu_name, TEACHER_GRADE_SUBMISSIONS) == 0) {
-        teacher_grade_submissions(data);
+        teacher_grade_submissions((Assignment*)data);
+    }
+    else if (strcmp(menu_name, TEACHER_MANAGE_MATERIALS) == 0) {
+        teacher_manage_materials((Topic*)data);
+    }
+    else if (strcmp(menu_name, TEACHER_MANAGE_ANNOUNCEMENTS) == 0) {
+        teacher_manage_announcements((Topic*)data);
     }
     else if (strcmp(menu_name, TEACHER_REVIEW_REQUESTS) == 0) {
-        teacher_review_requests(data);
+        teacher_review_requests((Course*)data);
     }
     else {
         printf("Menu tidak ditemukan: %s\n", menu_name);
