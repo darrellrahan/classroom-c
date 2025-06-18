@@ -25,6 +25,9 @@ int next_submission_id = 1;
 int next_material_id = 1;
 int next_announcement_id = 1;
 
+char next_menu[MAX_STRING];
+void* next_data;
+
 void init_system();
 void main_menu();
 void save_data();
@@ -50,8 +53,6 @@ void init_system() {
 
 void main_menu() {
     char choice_str[10];
-    char next_menu[MAX_STRING];
-    void* next_data;
 
     do {
         clear_screen();
@@ -59,7 +60,7 @@ void main_menu() {
         printf("1. Register\n");
         printf("2. Login\n");
         printf("0. Exit Program\n");
-        printf("00. Redo\n");
+        printf("commands: redo\n");
         printf("Choice: ");
         scanf("%s", choice_str);
         
@@ -72,16 +73,18 @@ void main_menu() {
             execute_menu(LOGIN_MENU, NULL);
         }
         else if (strcmp(choice_str, "0") == 0) {
-            if (undo_navigation(next_menu, &next_data)) {
-                if (strcmp(next_menu, MAIN_MENU) != 0) {
-                    execute_menu(next_menu, next_data);
-                }
-            } else {
-                printf("Thank you for using Courseroom!\n");
-                return;
-            }
+            // if (undo_navigation(next_menu, &next_data)) {
+            //     if (strcmp(next_menu, MAIN_MENU) != 0) {
+            //         execute_menu(next_menu, next_data);
+            //     }
+            // } else {
+            //     printf("Thank you for using Courseroom!\n");
+            //     return;
+            // }
+            printf("Thank you for using Courseroom!\n");
+            return;
         }
-        else if (strcmp(choice_str, "00") == 0) {
+        else if (strcmp(choice_str, "redo") == 0) {
             if (redo_navigation(next_menu, &next_data)) {
                 execute_menu(next_menu, next_data);
             } else {
@@ -93,7 +96,7 @@ void main_menu() {
             printf("Invalid choice! Please try again.\n");
             pause_screen();
         }
-    } while(strcmp(choice_str, "0") != 0);
+    } while(true);
 }
 
 void save_data() {

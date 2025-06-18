@@ -253,3 +253,14 @@ int count_notgraded_submissions(Assignment *assignment) {
     }
     return count;
 }
+
+bool is_number(const char *str) {
+    if (str == NULL || *str == '\0') return false; // kosong = bukan angka
+
+    while (*str) {
+        if (!isdigit(*str)) return false; // jika ada 1 karakter bukan digit
+        str++;
+    }
+
+    return true;
+}

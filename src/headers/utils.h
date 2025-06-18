@@ -31,4 +31,5 @@ int count_waitinglist_student(Course *course);
 int count_graded_submissions(Assignment *assignment);
 int count_notgraded_submissions(Assignment *assignment);
 
+bool is_number(const char *str);
 #endif
