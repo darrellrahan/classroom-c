@@ -49,31 +49,51 @@ void init_system() {
 }
 
 void main_menu() {
-    int choice;
+    char choice_str[10];
+    char next_menu[MAX_STRING];
+    void* next_data;
+
     do {
         clear_screen();
         printf("=== COURSEROOM MAIN MENU ===\n");
         printf("1. Register\n");
         printf("2. Login\n");
         printf("0. Exit Program\n");
+        printf("00. Redo\n");
         printf("Choice: ");
-        scanf("%d", &choice);
+        scanf("%s", choice_str);
         
-        switch(choice) {
-            case 1:
-                register_menu();
-                break;
-            case 2:
-                login_menu();
-                break;
-            case 0:
-                printf("Thank you for using Courseroom!\n");
-                break;
-            default:
-                printf("Invalid choice!\n");
-                pause_screen();
+        if (strcmp(choice_str, "1") == 0) {
+            navigate_to(MAIN_MENU, NULL);
+            execute_menu(REGISTER_MENU, NULL);
         }
-    } while(choice != 0);
+        else if (strcmp(choice_str, "2") == 0) {
+            navigate_to(MAIN_MENU, NULL);
+            execute_menu(LOGIN_MENU, NULL);
+        }
+        else if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                if (strcmp(next_menu, MAIN_MENU) != 0) {
+                    execute_menu(next_menu, next_data);
+                }
+            } else {
+                printf("Thank you for using Courseroom!\n");
+                return;
+            }
+        }
+        else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        }
+        else {
+            printf("Invalid choice! Please try again.\n");
+            pause_screen();
+        }
+    } while(strcmp(choice_str, "0") != 0);
 }
 
 void save_data() {

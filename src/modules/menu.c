@@ -9,6 +9,9 @@
 #include "../headers/auth.h"
 #include "../headers/stack.h"
 
+extern char next_menu[MAX_STRING];
+extern void* next_data;
+
 void execute_menu(const char* menu_name, void* data) {
     if (strcmp(menu_name, MAIN_MENU) == 0) {
         main_menu();
@@ -22,8 +25,8 @@ void execute_menu(const char* menu_name, void* data) {
     else if (strcmp(menu_name, STUDENT_DASHBOARD) == 0) {
         student_dashboard();
     }
-    else if (strcmp(menu_name, STUDENT_ACCOUNT_SETTINGS) == 0) {
-        student_account_settings();
+    else if (strcmp(menu_name, STUDENT_SEE_ACCOUNT) == 0) {
+        student_see_account();
     }
     else if (strcmp(menu_name, STUDENT_SEE_ACCOUNT) == 0) {
         student_see_account();
@@ -52,8 +55,8 @@ void execute_menu(const char* menu_name, void* data) {
     else if (strcmp(menu_name, TEACHER_DASHBOARD) == 0) {
         teacher_dashboard();
     }
-    else if (strcmp(menu_name, TEACHER_ACCOUNT_SETTINGS) == 0) {
-        teacher_account_settings();
+    else if (strcmp(menu_name, TEACHER_SEE_ACCOUNT) == 0) {
+        teacher_see_account();
     }
     else if (strcmp(menu_name, TEACHER_SEE_ACCOUNT) == 0) {
         teacher_see_account();
@@ -132,40 +135,61 @@ void register_menu() {
 }
 
 void login_menu() {
-    int choice;
+    char choice_str[10];
+
     do {
         clear_screen();
         printf("=== LOGIN MENU ===\n");
         printf("1. Login as Teacher\n");
         printf("2. Login as Student\n");
-        printf("0. Back\n");
+        printf("0. Back || 00. Redo\n");
         printf("Choice: ");
-        scanf("%d", &choice);
+        scanf("%s", choice_str);
         
-        switch(choice) {
-            case 1:
-                if(login_teacher()) {
-                    teacher_dashboard();
-                    current_teacher = NULL;
-                }
-                break;
-            case 2:
-                if(login_student()) {
-                    student_dashboard();
-                    current_student = NULL;
-                }
-                break;
-            case 0:
-                return;
-            default:
-                printf("Invalid choice!\n");
-                pause_screen();
+        if (strcmp(choice_str, "1") == 0) {
+            navigate_to(LOGIN_MENU, NULL);
+            if (login_teacher()) {
+                execute_menu(TEACHER_DASHBOARD, NULL);
+                current_teacher = NULL; // Clear current teacher after logout
+            }
+            return;
         }
-    } while(choice != 0);
+        else if (strcmp(choice_str, "2") == 0) {
+            navigate_to(LOGIN_MENU, NULL);
+            if (login_student()) {
+                execute_menu(STUDENT_DASHBOARD, NULL);
+                current_student = NULL; // clear current student after logout
+            }
+            return;
+        }
+        else if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No previous menu to undo!\n");
+                pause_screen();
+            }
+        }
+        else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        }
+        else {
+            printf("Invalid choice!\n");
+            pause_screen();
+        }
+    } while(strcmp(choice_str, "0") != 0);
 }
 
 void teacher_dashboard() {
-    int choice;
+    char choice_str[10];
+    
     do {
         clear_screen();
         printf("=== TEACHER DASHBOARD ===\n");
@@ -173,27 +197,45 @@ void teacher_dashboard() {
         printf("1. Manage Courses\n");
         printf("2. See Account\n");
         printf("0. Logout\n");
+        printf("00. Redo\n");
         printf("Choice: ");
-        scanf("%d", &choice);
-        
-        switch(choice) {
-            case 1:
-                teacher_course_menu();
-                break;
-            case 2:
-                teacher_see_account();
-                break;
-            case 0:
+        scanf("%s", choice_str);
+
+        if (strcmp(choice_str, "1") == 0) {
+            navigate_to(TEACHER_DASHBOARD, NULL);
+            execute_menu(TEACHER_COURSE_MENU, NULL);
+            return;
+        } else if (strcmp(choice_str, "2") == 0) {
+            navigate_to(TEACHER_DASHBOARD, NULL);
+            execute_menu(TEACHER_SEE_ACCOUNT, NULL);
+            return;
+        } else if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
                 return;
-            default:
-                printf("Invalid choice!\n");
+            } else {
+                printf("No previous menu to undo!\n");
                 pause_screen();
+            }
+        } else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        } else {
+            printf("Invalid choice!\n");
+            pause_screen();
         }
     } while(true);
 }
 
 void student_dashboard() {
-    int choice;
+    int choice_int;
+    char choice_str[10];
+
     do {
         clear_screen();
         printf("=== STUDENT DASHBOARD ===\n");
@@ -213,12 +255,14 @@ void student_dashboard() {
         printf("\n%d. Join New Course\n", count);
         printf("%d. See Account\n", count + 1);
         printf("0. Logout\n");
+        printf("00. Redo\n");
         printf("Choice: ");
-        scanf("%d", &choice);
+        scanf("%s", choice_str);
+        if (strcmp(choice_str, "00") != 0 && strcmp(choice_str, "0") != 0) {
+            choice_int = atoi(choice_str);
+        }
         
-        if(choice == 0) return;
-        
-        if(choice == count) {
+        if(choice_int == 1) {
             // Join new course
             char course_code[MAX_STRING];
             printf("Enter course code: ");
@@ -241,23 +285,42 @@ void student_dashboard() {
                 printf("Course not found!\n");
             }
             pause_screen();
-        } else if(choice == count + 1) {
-            // See Account
-            student_see_account();
+        } else if(choice_int == count + 1) { // if choice is 2
+            navigate_to(STUDENT_DASHBOARD, NULL);
+            execute_menu(STUDENT_SEE_ACCOUNT, NULL);
+            return;
+        } else if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No previous menu to undo!\n");
+                pause_screen();
+            }
+        } else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
         } else {
             // Select course
             temp = courses_head;
             int current_count = 1;
             while(temp) {
                 if(is_student_enrolled(temp, current_student->student_id)) {
-                    if(current_count == choice) {
-                        student_topic_menu(temp);
+                    if(current_count == choice_int) {
+                        navigate_to(STUDENT_DASHBOARD, temp);
+                        execute_menu(STUDENT_TOPIC_MENU, temp);
                         break;
                     }
                     current_count++;
                 }
                 temp = temp->next;
             }
+            return;
         }
     } while(true);
 }
@@ -280,7 +343,14 @@ void student_see_account() {
 }
 
 void student_topic_menu(Course *course) {
-    int choice;
+    if (!course) {
+        printf("No course data available.\n");
+        return;
+    }
+
+    int choice_int;
+    char choice_str[10];
+
     do {
         clear_screen();
         printf("=== COURSE: %s ===\n", course->name);
@@ -296,33 +366,58 @@ void student_topic_menu(Course *course) {
             temp = temp->next;
         }
         
-        printf("0. Back\n");
+        printf("0. Back || 00. Redo\n");
         printf("\n");
         printf("Choice: ");
-        scanf("%d", &choice);
-        
-        if (choice == 1) {
-            student_see_other_students(course);
-            continue;
+        scanf("%s", &choice_str);
+        if (strcmp(choice_str, "00") != 0 && strcmp(choice_str, "0") != 0) {
+            choice_int = atoi(choice_str);
         }
-
-        if(choice == 0) return;
         
-        // Select topic
-        temp = course->topics;
-        int current_count = 2;
-        while(temp) {
-            if(current_count == choice) {
-                student_topic_detail(temp);
-                break;
+        if (choice_int == 1) {
+            navigate_to(STUDENT_TOPIC_MENU, course);
+            execute_menu(STUDENT_SEE_OTHER_STUDENTS, course);
+            return;
+        } else if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No previous menu to undo!\n");
+                pause_screen();
             }
-            current_count++;
-            temp = temp->next;
+        } else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        } else {
+            // Select topic
+            temp = course->topics;
+            int current_count = 2;
+            while(temp) {
+                if(current_count == choice_int) {
+                    navigate_to(STUDENT_TOPIC_MENU, temp);
+                    execute_menu(STUDENT_TOPIC_DETAIL, temp);
+                    break;
+                }
+                current_count++;
+                temp = temp->next;
+            }
+            return;
         }
     } while(true);
 }
 
 void student_see_other_students(Course *course) {
+    if (!course) {
+        printf("No course data available.\n");
+        return;
+    }
+
     clear_screen();
     printf("=== ENROLLED STUDENTS (%d) ===\n", count_enrolled_student(course));
     
@@ -341,37 +436,67 @@ void student_see_other_students(Course *course) {
 }
 
 void student_topic_detail(Topic *topic) {
-    int choice;
+    if (!topic) {
+        printf("No topic data available.\n");
+        return;
+
+    }
+    
+    int choice_int;
+    char choice_str[10];
+
     do {
         clear_screen();
         printf("=== TOPIC: %s ===\n", topic->title);
         printf("1. See Assignments\n");
         printf("2. See Materials\n");
         printf("3. See Announcements\n");
-        printf("0. Back\n");
+        printf("0. Back | 00. Redo\n");
         printf("\n");
         printf("Choice: ");
-        scanf("%d", &choice);
-        
-        switch(choice) {
-            case 1:
-                student_view_assignments(topic);
-                break;
-            case 2:
-                // View materials
-                student_view_materials(topic);
-                break;
-            case 3:
-                // View announcements
-                student_view_announcements(topic);
-                break;
-            case 0:
-                return;
+        scanf("%s", choice_str);
+        if (strcmp(choice_str, "00") != 0 && strcmp(choice_str, "0") != 0) {
+            choice_int = atoi(choice_str);
         }
-    } while(choice != 0);
+        
+        if (choice_int == 1) {
+            navigate_to(STUDENT_TOPIC_DETAIL, topic);
+            execute_menu(STUDENT_VIEW_ASSIGNMENTS, topic);
+            return;
+        } else if (choice_int == 2) {
+            navigate_to(STUDENT_TOPIC_DETAIL, topic);
+            execute_menu(STUDENT_VIEW_MATERIALS, topic);
+            return;
+        } else if (choice_int == 3) {
+            navigate_to(STUDENT_TOPIC_DETAIL, topic);
+            execute_menu(STUDENT_VIEW_ANNOUNCEMENTS, topic);
+            return;
+        } else if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No previous menu to undo!\n");
+                pause_screen();
+            }
+        } else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        }
+    } while(true);
 }
 
 void student_view_materials(Topic *topic) {
+    if (!topic) {
+        printf("No topic data available.\n");
+        return;
+    }
+
     clear_screen();
     printf("=== MATERIALS: %s ===\n", topic->title);
     Material *mat = topic->materials;
@@ -388,6 +513,11 @@ void student_view_materials(Topic *topic) {
 }
 
 void student_view_announcements(Topic *topic) {
+    if (!topic) {
+        printf("No topic data available.\n");
+        return;
+    }
+
     clear_screen();
     printf("=== ANNOUNCEMENTS: %s ===\n", topic->title);
     Announcement *ann = topic->announcements;
@@ -403,7 +533,14 @@ void student_view_announcements(Topic *topic) {
 }
 
 void student_view_assignments(Topic *topic) {
-    int choice;
+    if (!topic) {
+        printf("No topic data available.\n");
+        return;
+    }
+
+    int choice_int;
+    char choice_str[10];
+
     do {
         clear_screen();
         printf("=== ASSIGNMENTS: %s ===\n", topic->title);
@@ -436,37 +573,61 @@ void student_view_assignments(Topic *topic) {
             temp = temp->next;
         }
         
-        printf("0. Back\n");
+        printf("0. Back | 00. Redo\n");
         printf("Choice: ");
-        scanf("%d", &choice);
+        scanf("%s", choice_str);
+        if (strcmp(choice_str, "00") != 0 && strcmp(choice_str, "0") != 0) {
+            choice_int = atoi(choice_str);
+        }
         
-        if(choice == 0) return;
-        
-        // Select assignment
-        temp = topic->assignments;
-        int current_count = 1;
-        while(temp) {
-            if(current_count == choice) {
-                bool submitted = has_student_submitted(temp, current_student->student_id);
-                bool overdue = is_deadline_passed(temp->deadline);
-                
-                if(submitted) {
-                    printf("You have already submitted this assignment!\n");
-                } else if(overdue) {
-                    printf("This assignment is overdue and cannot be submitted!\n");
-                } else {
-                    student_submit_assignment(temp);
-                }
+        if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No previous menu to undo!\n");
                 pause_screen();
-                break;
             }
-            current_count++;
-            temp = temp->next;
+        } else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        } else {
+            // Select assignment
+            temp = topic->assignments;
+            int current_count = 1;
+            while(temp) {
+                if(current_count == choice_int) {
+                    bool submitted = has_student_submitted(temp, current_student->student_id);
+                    bool overdue = is_deadline_passed(temp->deadline);
+                    
+                    if(submitted) {
+                        printf("You have already submitted this assignment!\n");
+                    } else if(overdue) {
+                        printf("This assignment is overdue and cannot be submitted!\n");
+                    } else {
+                        student_submit_assignment(temp);
+                    }
+                    pause_screen();
+                    break;
+                }
+                current_count++;
+                temp = temp->next;
+            }
         }
     } while(true);
 }
 
 void student_submit_assignment(Assignment *assignment) {
+    if (!assignment) {
+        printf("Invalid assignment data.\n");
+        return;
+    }
+
     clear_screen();
     printf("=== SUBMIT ASSIGNMENT: %s ===\n", assignment->title);
     
@@ -522,7 +683,9 @@ void teacher_see_account() {
 }
 
 void teacher_course_menu() {
-    int choice;
+    int choice_int;
+    char choice_str[10];
+
     do {
         clear_screen();
         printf("=== COURSE MANAGEMENT ===\n");
@@ -539,12 +702,30 @@ void teacher_course_menu() {
         }
         
         printf("\n%d. Create New Course\n", count);
-        printf("0. Back\n");
+        printf("0. Back | 00. Redo\n");
         printf("Choice: ");
-        scanf("%d", &choice);
-        
-        if(choice == 0) return;
-        if(choice == count) {
+        scanf("%s", choice_str);
+        if (strcmp(choice_str, "00") != 0 && strcmp(choice_str, "0") != 0) {
+            choice_int = atoi(choice_str);
+        }
+
+        if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No previous menu to undo!\n");
+                pause_screen();
+            }
+        } else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        } else if(choice_int == count) {
             // Create new course
             Course *new_course = (Course*)malloc(sizeof(Course));
             if(new_course) {
@@ -563,22 +744,7 @@ void teacher_course_menu() {
                     if(find_course_by_code(new_course->code)) {
                         printf("This course code is already taken. Please try another one.\n");
                         pause_screen();
-                        clear_screen();
-                        // Re-display course management menu
-                        printf("=== COURSE MANAGEMENT ===\n");
-                        printf("Your Courses:\n");
-                        temp = courses_head;
-                        count = 1;
-                        while(temp) {
-                            if(temp->teacher_id == current_teacher->teacher_id) {
-                                printf("%d. %s (Code: %s)\n", count++, temp->name, temp->code);
-                            }
-                            temp = temp->next;
-                        }
-                        printf("\n%d. Create New Course\n", count);
-                        printf("0. Back\n");
-                        printf("Choice: %d\n", choice);
-                        printf("Enter course name: %s\n", new_course->name);
+                        continue;
                     } else {
                         break;
                     }
@@ -605,31 +771,56 @@ void teacher_course_menu() {
             int current_count = 1;
             while(temp) {
                 if(temp->teacher_id == current_teacher->teacher_id) {
-                    if(current_count == choice) {
+                    if(current_count == choice_int) {
                         // Course selected
-                        int sub_choice;
+                        int choice_int2;
+                        char choice_str2[10];
                         do {
                             clear_screen();
                             printf("=== COURSE: %s ===\n", temp->name);
                             printf("1. See Students\n");
                             printf("2. See and Manage Topics\n");
                             printf("3. Review Requests (%d)\n", count_waitinglist_student(temp));
-                            printf("0. Back\n");
+                            printf("0. Back || 00. Redo\n");
                             printf("Choice: ");
-                            scanf("%d", &sub_choice);
-                            
-                            switch(sub_choice) {
-                                case 1:
-                                    teacher_see_students(temp);
-                                    break;
-                                case 2:
-                                    teacher_manage_topics(temp);
-                                    break;
-                                case 3:
-                                    teacher_review_requests(temp);
-                                    break;
+                            scanf("%s", choice_str2);
+                            if (strcmp(choice_str2, "00") != 0 && strcmp(choice_str2, "0") != 0) {
+                                choice_int2 = atoi(choice_str2);
                             }
-                        } while(sub_choice != 0);
+
+                            if (strcmp(choice_str, "0") == 0) {
+                                if (undo_navigation(next_menu, &next_data)) {
+                                    execute_menu(next_menu, next_data);
+                                    return;
+                                } else {
+                                    printf("No previous menu to undo!\n");
+                                    pause_screen();
+                                }
+                            } else if (strcmp(choice_str, "00") == 0) {
+                                if (redo_navigation(next_menu, &next_data)) {
+                                    execute_menu(next_menu, next_data);
+                                    return;
+                                } else {
+                                    printf("No menu to redo!\n");
+                                    pause_screen();
+                                }
+                            } else {
+                                switch(choice_int2) {
+                                    case 1:
+                                        navigate_to(TEACHER_COURSE_MENU, temp);
+                                        execute_menu(TEACHER_SEE_STUDENTS, temp);
+                                        return;
+                                    case 2:
+                                        navigate_to(TEACHER_COURSE_MENU, temp);
+                                        execute_menu(TEACHER_MANAGE_TOPICS, temp);
+                                        return;
+                                    case 3:
+                                        navigate_to(TEACHER_COURSE_MENU, temp);
+                                        execute_menu(TEACHER_REVIEW_REQUESTS, temp);
+                                        return;
+                                }
+                            }
+                        } while(true);
                         break;
                     }
                     current_count++;
@@ -655,12 +846,18 @@ void teacher_see_students(Course *course) {
         }
     }
     
-    pause_screen();
-    
+    pause_screen();    
 }
 
 void teacher_manage_topics(Course *course) {
-    int choice;
+    if (!course) {
+        printf("No course data available.\n");
+        return;
+    }
+
+    int choice_int;
+    char choice_str[10];
+
     do {
         clear_screen();
         printf("=== TOPICS: %s ===\n", course->name);
@@ -674,13 +871,32 @@ void teacher_manage_topics(Course *course) {
         
         printf("\n");
         printf("%d. Create New Topic\n", count);
-        printf("0. Back\n");
+        printf("0. Back | 00. Redo \n");
         printf("\n");
         printf("Choice: ");
-        scanf("%d", &choice);
+        scanf("%s", choice_str);
+        if (strcmp(choice_str, "00") != 0 && strcmp(choice_str, "0") != 0) {
+            choice_int = atoi(choice_str);
+        }
         
-        if(choice == 0) return;
-        if(choice == count) {
+        if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No previous menu to undo!\n");
+                pause_screen();
+            }
+        } else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        }
+        else if(choice_int == count) {
             // Create new topic
             Topic *new_topic = (Topic*)malloc(sizeof(Topic));
             if(new_topic) {
@@ -712,48 +928,86 @@ void teacher_manage_topics(Course *course) {
             temp = course->topics;
             int current_count = 1;
             while(temp) {
-                if(current_count == choice) {
-                    teacher_topic_detail(temp);
+                if(current_count == choice_int) {
+                    navigate_to(TEACHER_MANAGE_TOPICS, temp);
+                    execute_menu(TEACHER_TOPIC_DETAIL, temp);
                     break;
                 }
                 current_count++;
                 temp = temp->next;
             }
+            return;
         }
     } while(true);
 }
 
 void teacher_topic_detail(Topic *topic) {
-    int choice;
+    if (!topic) {
+        printf("No topic data available.\n");
+        return;
+    }
+
+    int choice_int;
+    char choice_str[10];
+
     do {
         clear_screen();
         printf("=== TOPIC: %s ===\n", topic->title);
         printf("1. Manage Assignments\n");
         printf("2. Manage Materials\n");
         printf("3. Manage Announcements\n");
-        printf("0. Back\n");
+        printf("0. Back | 00. Redo \n");
         printf("\n");
         printf("Choice: ");
-        scanf("%d", &choice);
-        
-        switch(choice) {
-            case 1:
-                teacher_manage_assignments(topic);
-                break;
-            case 2:
-                teacher_manage_materials(topic);
-                break;
-            case 3:
-                teacher_manage_announcements(topic);
-                break;
-            case 0:
-                return;
+        scanf("%s", choice_str);
+        if (strcmp(choice_str, "00") != 0 && strcmp(choice_str, "0") != 0) {
+            choice_int = atoi(choice_str);
         }
-    } while(choice != 0);
+
+        if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No previous menu to undo!\n");
+                pause_screen();
+            }
+        } else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        } else {
+            switch(choice_int) {
+                case 1:
+                    navigate_to(TEACHER_TOPIC_DETAIL, topic);
+                    execute_menu(TEACHER_MANAGE_ASSIGNMENTS, topic);
+                    return;
+                case 2:
+                    navigate_to(TEACHER_TOPIC_DETAIL, topic);
+                    execute_menu(TEACHER_MANAGE_MATERIALS, topic);
+                    return;
+                case 3:
+                    navigate_to(TEACHER_TOPIC_DETAIL, topic);
+                    execute_menu(TEACHER_MANAGE_ANNOUNCEMENTS, topic);
+                    return;
+            }
+        }
+    } while(true);
 }
 
 void teacher_manage_assignments(Topic *topic) {
-    int choice;
+    if (!topic) {
+        printf("No topic data available.\n");
+        return;
+    }
+
+    int choice_int;
+    char choice_str[10];
+
     do {
         clear_screen();
         printf("=== ASSIGNMENTS: %s ===\n", topic->title);
@@ -769,13 +1023,31 @@ void teacher_manage_assignments(Topic *topic) {
         
         printf("\n");
         printf("%d. Create New Assignment\n", count);
-        printf("0. Back\n");
+        printf("0. Back | 00. Redo \n");
         printf("\n");
         printf("Choice: ");
-        scanf("%d", &choice);
+        scanf("%s", choice_str);
+        if (strcmp(choice_str, "00") != 0 && strcmp(choice_str, "0") != 0) {
+            choice_int = atoi(choice_str);
+        }
         
-        if(choice == 0) return;
-        if(choice == count) {
+        if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No previous menu to undo!\n");
+                pause_screen();
+            }
+        } else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        } else if(choice_int == count) {
             // Create new assignment
             Assignment *new_assignment = (Assignment*)malloc(sizeof(Assignment));
             if(new_assignment) {
@@ -808,33 +1080,59 @@ void teacher_manage_assignments(Topic *topic) {
             temp = topic->assignments;
             int current_count = 1;
             while(temp) {
-                if(current_count == choice) {
-                    int sub_choice;
+                if(current_count == choice_int) {
+                    int choice_int2;
+                    char choice_str2[10];
                     do {
                         clear_screen();
                         printf("=== ASSIGNMENT: %s ===\n", temp->title);
                         printf("1. View Not Graded Submissions (%d)\n", count_notgraded_submissions(temp));
                         printf("2. View Graded Submissions (%d)\n", count_graded_submissions(temp));
                         printf("3. Start Grading\n");
-                        printf("0. Back\n");
+                        printf("0. Back | 00. Redo\n");
                         printf("\n");
                         printf("Choice: ");
-                        scanf("%d", &sub_choice);
+                        scanf("%s", choice_str2);
+                        if (strcmp(choice_str2, "00") != 0 && strcmp(choice_str2, "0") != 0) {
+                            choice_int2 = atoi(choice_str2);
+                        }
                         
-                        switch(sub_choice) {
+                        if (strcmp(choice_str2, "0") == 0) {
+                            if (undo_navigation(next_menu, &next_data)) {
+                                execute_menu(next_menu, next_data);
+                                return;
+                            } else {
+                                printf("No previous menu to undo!\n");
+                                pause_screen();
+                            }
+                        } else if (strcmp(choice_str2, "00") == 0) {
+                            if (redo_navigation(next_menu, &next_data)) {
+                                execute_menu(next_menu, next_data);
+                                return;
+                            } else {
+                                printf("No menu to redo!\n");
+                                pause_screen();
+                            }
+                        } else {
+                            switch(choice_int2) {
                             case 1:
                                 // Show not graded submissions
-                                teacher_show_notgraded_submissions(temp);
-                                break;
+                                navigate_to(TEACHER_MANAGE_ASSIGNMENTS, temp);
+                                execute_menu(TEACHER_SHOW_NOTGRADED_SUBMISSIONS, temp);
+                                return;
                             case 2:
                                 // Show graded submissions
-                                teacher_show_graded_submissions(temp);
-                                break;
+                                navigate_to(TEACHER_MANAGE_ASSIGNMENTS, temp);
+                                execute_menu(TEACHER_SHOW_GRADED_SUBMISSIONS, temp);
+                                return;
                             case 3:
-                                teacher_grade_submissions(temp);
+                                // Start grading submissions
+                                navigate_to(TEACHER_MANAGE_ASSIGNMENTS, temp);
+                                execute_menu(TEACHER_GRADE_SUBMISSIONS, temp);
                                 break;
+                            }
                         }
-                    } while(sub_choice != 0);
+                    } while(true);
                     break;
                 }
                 current_count++;
@@ -962,7 +1260,14 @@ void teacher_review_requests(Course *course) {
 }
 
 void teacher_manage_materials(Topic *topic) {
-    int choice;
+    if (!topic) {
+        printf("No topic data available.\n");
+        return;
+    }
+
+    int choice_int;
+    char choice_str[10];
+    
     do {
         clear_screen();
         printf("=== MATERIALS: %s ===\n", topic->title);
@@ -976,13 +1281,31 @@ void teacher_manage_materials(Topic *topic) {
         
         printf("\n");
         printf("%d. Create New Material\n", count);
-        printf("0. Back\n");
+        printf("0. Back | 00. Redo\n");
         printf("\n");
         printf("Choice: ");
-        scanf("%d", &choice);
+        scanf("%s", choice_str);
+        if (strcmp(choice_str, "00") != 0 && strcmp(choice_str, "0") != 0) {
+            choice_int = atoi(choice_str);
+        }
         
-        if(choice == 0) return;
-        if(choice == count) {
+        if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No previous menu to undo!\n");
+                pause_screen();
+            }
+        } else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        } else if(choice_int == count) {
             // Create new material
             Material *new_material = (Material*)malloc(sizeof(Material));
             if(new_material) {
@@ -1015,7 +1338,14 @@ void teacher_manage_materials(Topic *topic) {
 }
 
 void teacher_manage_announcements(Topic *topic) {
-    int choice;
+    if (!topic) {
+        printf("No topic data available.\n");
+        return;
+    }
+
+    int choice_int;
+    char choice_str[10];
+
     do {
         clear_screen();
         printf("=== ANNOUNCEMENTS: %s ===\n", topic->title);
@@ -1029,13 +1359,32 @@ void teacher_manage_announcements(Topic *topic) {
         
         printf("\n");
         printf("%d. Create New Announcement\n", count);
-        printf("0. Back\n");
+        printf("0. Back | 00. Redo\n");
         printf("\n");
         printf("Choice: ");
-        scanf("%d", &choice);
+        scanf("%s", choice_str);
+        if (strcmp(choice_str, "00") != 0 && strcmp(choice_str, "0") != 0) {
+            choice_int = atoi(choice_str);
+        }
         
-        if(choice == 0) return;
-        if(choice == count) {
+        if (strcmp(choice_str, "0") == 0) {
+            if (undo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No previous menu to undo!\n");
+                pause_screen();
+            }
+        } else if (strcmp(choice_str, "00") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        }
+        else if(choice_int == count) {
             // Create new announcement
             Announcement *new_announcement = (Announcement*)malloc(sizeof(Announcement));
             if(new_announcement) {

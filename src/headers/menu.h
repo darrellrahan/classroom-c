@@ -7,6 +7,10 @@
 
 #include "structs.h"
 
+// global variables
+char next_menu[MAX_STRING];
+void* next_data;
+
 // executor
 void execute_menu(const char* menu_name, void* data);
 
