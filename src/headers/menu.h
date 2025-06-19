@@ -7,6 +7,10 @@
 
 #include "structs.h"
 
+// global variables
+extern char next_menu[MAX_STRING];
+extern void* next_data;
+
 // executor
 void execute_menu(const char* menu_name, void* data);
 
@@ -30,6 +34,7 @@ void student_see_other_students(Course *course);
 // Teacher functions
 void teacher_see_account();
 void teacher_course_menu();
+void teacher_course_detail(Course *course);
 void teacher_manage_topics(Course *course);
 void teacher_review_requests(Course *course);
 void teacher_topic_detail(Topic *topic);

@@ -25,5 +25,6 @@ void cleanup_navigation();
 void navigate_to(const char* menu_name, void* data);
 bool undo_navigation(char* prev_menu, void** prev_data);
 bool redo_navigation(char* next_menu, void** next_data);
+// void redirect_to(const char* menu_name, void* data);
 
 #endif // STACK_H

@@ -78,6 +78,21 @@ Assignment* find_assignment_by_id(int assignment_id) {
     return NULL;
 }
 
+Topic* find_topic_by_id(int topic_id) {
+    Course *course = courses_head;
+    while (course) {
+        Topic *topic = course->topics;
+        while (topic) {
+            if (topic->topic_id == topic_id) {
+                return topic;
+            }
+            topic = topic->next;
+        }
+        course = course->next;
+    }
+    return NULL;
+}
+
 void get_current_time(Timestamp *ts) {
     time_t now = time(0);
     struct tm *local = localtime(&now);
@@ -252,4 +267,15 @@ int count_notgraded_submissions(Assignment *assignment) {
         temp = temp->next;
     }
     return count;
+}
+
+bool is_number(const char *str) {
+    if (str == NULL || *str == '\0') return false; // kosong = bukan angka
+
+    while (*str) {
+        if (!isdigit(*str)) return false; // jika ada 1 karakter bukan digit
+        str++;
+    }
+
+    return true;
 }

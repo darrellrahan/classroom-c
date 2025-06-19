@@ -25,6 +25,9 @@ int next_submission_id = 1;
 int next_material_id = 1;
 int next_announcement_id = 1;
 
+char next_menu[MAX_STRING];
+void* next_data;
+
 void init_system();
 void main_menu();
 void save_data();
@@ -33,11 +36,13 @@ void cleanup();
 
 // Implementation
 int main() {
+    init_navigation();
     init_system();
     load_data();
     main_menu();
     save_data();
     cleanup();
+    cleanup_navigation();
     return 0;
 }
 
@@ -49,31 +54,54 @@ void init_system() {
 }
 
 void main_menu() {
-    int choice;
+    char choice_str[10];
+
     do {
         clear_screen();
         printf("=== COURSEROOM MAIN MENU ===\n");
         printf("1. Register\n");
         printf("2. Login\n");
         printf("0. Exit Program\n");
+        printf("commands: redo\n");
         printf("Choice: ");
-        scanf("%d", &choice);
+        scanf("%s", choice_str);
         
-        switch(choice) {
-            case 1:
-                register_menu();
-                break;
-            case 2:
-                login_menu();
-                break;
-            case 0:
-                printf("Thank you for using Courseroom!\n");
-                break;
-            default:
-                printf("Invalid choice!\n");
-                pause_screen();
+        if (strcmp(choice_str, "1") == 0) {
+            navigate_to(REGISTER_MENU, NULL);
+            execute_menu(REGISTER_MENU, NULL);
+            return;
         }
-    } while(choice != 0);
+        else if (strcmp(choice_str, "2") == 0) {
+            navigate_to(LOGIN_MENU, NULL);
+            execute_menu(LOGIN_MENU, NULL);
+            return;
+        }
+        else if (strcmp(choice_str, "0") == 0) {
+            // if (undo_navigation(next_menu, &next_data)) {
+            //     if (strcmp(next_menu, MAIN_MENU) != 0) {
+            //         execute_menu(next_menu, next_data);
+            //     }
+            // } else {
+            //     printf("Thank you for using Courseroom!\n");
+            //     return;
+            // }
+            printf("Thank you for using Courseroom!\n");
+            break;
+        }
+        else if (strcmp(choice_str, "redo") == 0) {
+            if (redo_navigation(next_menu, &next_data)) {
+                execute_menu(next_menu, next_data);
+                return;
+            } else {
+                printf("No menu to redo!\n");
+                pause_screen();
+            }
+        }
+        else {
+            printf("Invalid choice! Please try again.\n");
+            pause_screen();
+        }
+    } while(true);
 }
 
 void save_data() {

@@ -22,6 +22,7 @@ void push(NavigationStack* stack, const char* menu_name, void* data) {
     
     StackNode* new_node = (StackNode*)malloc(sizeof(StackNode));
     if (new_node) {
+        if (strlen(menu_name) >= MAX_STRING) return;
         strcpy(new_node->menu_name, menu_name);
         new_node->data = data;
         new_node->next = stack->top;

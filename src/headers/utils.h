@@ -15,6 +15,7 @@ Course* find_course_by_id(int id);
 Student* find_student_by_id(int id);
 Student* find_student_by_unique_number(char *unique_number);
 Assignment* find_assignment_by_id(int assignment_id);
+Topic* find_topic_by_id(int topic_id);
 void get_current_time(Timestamp *ts);
 void print_timestamp(Timestamp ts);
 bool is_deadline_passed(Timestamp deadline);
@@ -31,4 +32,5 @@ int count_waitinglist_student(Course *course);
 int count_graded_submissions(Assignment *assignment);
 int count_notgraded_submissions(Assignment *assignment);
 
+bool is_number(const char *str);
 #endif
