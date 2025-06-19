@@ -69,10 +69,12 @@ void main_menu() {
         if (strcmp(choice_str, "1") == 0) {
             initialize_current_menu(MAIN_MENU, NULL);
             execute_menu(REGISTER_MENU, NULL);
+            return;
         }
         else if (strcmp(choice_str, "2") == 0) {
             initialize_current_menu(MAIN_MENU, NULL);
             execute_menu(LOGIN_MENU, NULL);
+            return;
         }
         else if (strcmp(choice_str, "0") == 0) {
             // if (undo_navigation(next_menu, &next_data)) {
@@ -89,6 +91,7 @@ void main_menu() {
         else if (strcmp(choice_str, "redo") == 0) {
             if (redo_navigation(next_menu, &next_data)) {
                 execute_menu(next_menu, next_data);
+                return;
             } else {
                 printf("No menu to redo!\n");
                 pause_screen();

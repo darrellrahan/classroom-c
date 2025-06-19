@@ -142,16 +142,20 @@ void login_menu() {
             initialize_current_menu(LOGIN_MENU, NULL);
             if (login_teacher()) {
                 execute_menu(TEACHER_DASHBOARD, NULL);
-                current_teacher = NULL; // Clear current teacher after logout
+                return;
+                // current_teacher = NULL; // Clear current teacher after logout
             }
+            execute_menu(MAIN_MENU, NULL);
             return;
         }
         else if (strcmp(choice_str, "2") == 0) {
             initialize_current_menu(LOGIN_MENU, NULL);
             if (login_student()) {
                 execute_menu(STUDENT_DASHBOARD, NULL);
-                current_student = NULL; // clear current student after logout
+                return;
+                // current_student = NULL; // clear current student after logout
             }
+            execute_menu(MAIN_MENU, NULL);
             return;
         }
         else if (strcmp(choice_str, "back") == 0) {
@@ -302,7 +306,7 @@ void student_dashboard() {
             while(temp) {
                 if(is_student_enrolled(temp, current_student->student_id)) {
                     if(current_count == choice_int) {
-                        initialize_current_menu(STUDENT_DASHBOARD, temp);
+                        initialize_current_menu(STUDENT_DASHBOARD, NULL);
                         execute_menu(STUDENT_TOPIC_MENU, temp);
                         return;
                     }
@@ -345,6 +349,7 @@ void student_see_account() {
 void student_topic_menu(Course *course) {
     if (!course) {
         printf("No course data available.\n");
+        pause_screen();
         return;
     }
 
@@ -398,7 +403,7 @@ void student_topic_menu(Course *course) {
             int current_count = 1;
             while(temp) {
                 if(current_count == choice_int) {
-                    initialize_current_menu(STUDENT_TOPIC_MENU, temp);
+                    initialize_current_menu(STUDENT_TOPIC_MENU, course);
                     execute_menu(STUDENT_TOPIC_DETAIL, temp);
                     return;
                 }
@@ -415,6 +420,7 @@ void student_topic_menu(Course *course) {
 void student_see_other_students(Course *course) {
     if (!course) {
         printf("No course data available.\n");
+        pause_screen();
         return;
     }
 
@@ -446,6 +452,7 @@ void student_see_other_students(Course *course) {
 void student_topic_detail(Topic *topic) {
     if (!topic) {
         printf("No topic data available.\n");
+        pause_screen();
         return;
     }
 
@@ -502,6 +509,7 @@ void student_topic_detail(Topic *topic) {
 void student_view_materials(Topic *topic) {
     if (!topic) {
         printf("No topic data available.\n");
+        pause_screen();
         return;
     }
 
@@ -531,6 +539,7 @@ void student_view_materials(Topic *topic) {
 void student_view_announcements(Topic *topic) {
     if (!topic) {
         printf("No topic data available.\n");
+        pause_screen();
         return;
     }
 
@@ -559,6 +568,7 @@ void student_view_announcements(Topic *topic) {
 void student_view_assignments(Topic *topic) {
     if (!topic) {
         printf("No topic data available.\n");
+        pause_screen();
         return;
     }
 
@@ -641,7 +651,7 @@ void student_view_assignments(Topic *topic) {
                         break;
                     } else {
                         // Proceed to submit assignment
-                        initialize_current_menu(STUDENT_VIEW_ASSIGNMENTS, temp);
+                        initialize_current_menu(STUDENT_VIEW_ASSIGNMENTS, topic);
                         execute_menu(STUDENT_SUBMIT_ASSIGNMENT, temp);
                         return;
                     }
@@ -659,6 +669,7 @@ void student_view_assignments(Topic *topic) {
 void student_submit_assignment(Assignment *assignment) {
     if (!assignment) {
         printf("Invalid assignment data.\n");
+        pause_screen();
         return;
     }
 
@@ -864,17 +875,17 @@ void teacher_course_menu() {
                             } else {
                                 if (choice_int2 == 1) {
                                     // See students
-                                    initialize_current_menu(TEACHER_COURSE_MENU, temp);
+                                    initialize_current_menu(TEACHER_COURSE_MENU, NULL);
                                     execute_menu(TEACHER_SEE_STUDENTS, temp);
                                     return;
                                 } else if (choice_int2 == 2) {
                                     // Manage topics
-                                    initialize_current_menu(TEACHER_COURSE_MENU, temp);
+                                    initialize_current_menu(TEACHER_COURSE_MENU, NULL);
                                     execute_menu(TEACHER_MANAGE_TOPICS, temp);
                                     return;
                                 } else if (choice_int2 == 3) {
                                     // Review requests
-                                    initialize_current_menu(TEACHER_COURSE_MENU, temp);
+                                    initialize_current_menu(TEACHER_COURSE_MENU, NULL);
                                     execute_menu(TEACHER_REVIEW_REQUESTS, temp);
                                     return;
                                 } else {
@@ -899,6 +910,7 @@ void teacher_course_menu() {
 void teacher_see_students(Course *course) {
     if (!course) {
         printf("No course data available.\n");
+        pause_screen();
         return;
     }
 
@@ -930,6 +942,7 @@ void teacher_see_students(Course *course) {
 void teacher_manage_topics(Course *course) {
     if (!course) {
         printf("No course data available.\n");
+        pause_screen();
         return;
     }
 
@@ -1006,7 +1019,7 @@ void teacher_manage_topics(Course *course) {
             int current_count = 1;
             while(temp) {
                 if(current_count == choice_int) {
-                    initialize_current_menu(TEACHER_MANAGE_TOPICS, temp);
+                    initialize_current_menu(TEACHER_MANAGE_TOPICS, course);
                     execute_menu(TEACHER_TOPIC_DETAIL, temp);
                     return;
                 }
@@ -1023,6 +1036,7 @@ void teacher_manage_topics(Course *course) {
 void teacher_topic_detail(Topic *topic) {
     if (!topic) {
         printf("No topic data available.\n");
+        pause_screen();
         return;
     }
 
@@ -1084,6 +1098,7 @@ void teacher_topic_detail(Topic *topic) {
 void teacher_manage_assignments(Topic *topic) {
     if (!topic) {
         printf("No topic data available.\n");
+        pause_screen();
         return;
     }
 
@@ -1198,15 +1213,15 @@ void teacher_manage_assignments(Topic *topic) {
                             }
                         } else {
                             if (choice_int2 == 1) {
-                                initialize_current_menu(TEACHER_MANAGE_ASSIGNMENTS, temp);
+                                initialize_current_menu(TEACHER_MANAGE_ASSIGNMENTS, topic);
                                 execute_menu(TEACHER_SHOW_NOTGRADED_SUBMISSIONS, temp);
                                 return;
                             } else if (choice_int2 == 2) {
-                                initialize_current_menu(TEACHER_MANAGE_ASSIGNMENTS, temp);
+                                initialize_current_menu(TEACHER_MANAGE_ASSIGNMENTS, topic);
                                 execute_menu(TEACHER_SHOW_GRADED_SUBMISSIONS, temp);
                                 return;
                             } else if (choice_int2 == 3) {
-                                initialize_current_menu(TEACHER_MANAGE_ASSIGNMENTS, temp);
+                                initialize_current_menu(TEACHER_MANAGE_ASSIGNMENTS, topic);
                                 execute_menu(TEACHER_GRADE_SUBMISSIONS, temp);
                                 return;
                             } else {
@@ -1379,6 +1394,7 @@ void teacher_review_requests(Course *course) {
 void teacher_manage_materials(Topic *topic) {
     if (!topic) {
         printf("No topic data available.\n");
+        pause_screen();
         return;
     }
     
@@ -1459,6 +1475,7 @@ void teacher_manage_materials(Topic *topic) {
 void teacher_manage_announcements(Topic *topic) {
     if (!topic) {
         printf("No topic data available.\n");
+        pause_screen();
         return;
     }
 
