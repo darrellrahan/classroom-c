@@ -69,7 +69,7 @@ void cleanup_navigation() {
     free(redo_stack);
 }
 
-void initialize_current_menu(const char* menu_name, void* data) {
+void navigate_to(const char* menu_name, void* data) {
     // Clear redo stack when making new navigation
     clear_stack(redo_stack);
     

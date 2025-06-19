@@ -67,12 +67,12 @@ void main_menu() {
         scanf("%s", choice_str);
         
         if (strcmp(choice_str, "1") == 0) {
-            initialize_current_menu(MAIN_MENU, NULL);
+            navigate_to(REGISTER_MENU, NULL);
             execute_menu(REGISTER_MENU, NULL);
             return;
         }
         else if (strcmp(choice_str, "2") == 0) {
-            initialize_current_menu(MAIN_MENU, NULL);
+            navigate_to(LOGIN_MENU, NULL);
             execute_menu(LOGIN_MENU, NULL);
             return;
         }

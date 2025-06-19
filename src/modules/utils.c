@@ -78,6 +78,21 @@ Assignment* find_assignment_by_id(int assignment_id) {
     return NULL;
 }
 
+Topic* find_topic_by_id(int topic_id) {
+    Course *course = courses_head;
+    while (course) {
+        Topic *topic = course->topics;
+        while (topic) {
+            if (topic->topic_id == topic_id) {
+                return topic;
+            }
+            topic = topic->next;
+        }
+        course = course->next;
+    }
+    return NULL;
+}
+
 void get_current_time(Timestamp *ts) {
     time_t now = time(0);
     struct tm *local = localtime(&now);
