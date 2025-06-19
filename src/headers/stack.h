@@ -22,7 +22,7 @@ StackNode* peek(NavigationStack* stack);
 void clear_stack(NavigationStack* stack);
 void init_navigation();
 void cleanup_navigation();
-void navigate_to(const char* menu_name, void* data);
+void initialize_current_menu(const char* menu_name, void* data);
 bool undo_navigation(char* prev_menu, void** prev_data);
 bool redo_navigation(char* next_menu, void** next_data);
 

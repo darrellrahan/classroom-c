@@ -22,6 +22,7 @@ void push(NavigationStack* stack, const char* menu_name, void* data) {
     
     StackNode* new_node = (StackNode*)malloc(sizeof(StackNode));
     if (new_node) {
+        if (strlen(menu_name) >= MAX_STRING) return;
         strcpy(new_node->menu_name, menu_name);
         new_node->data = data;
         new_node->next = stack->top;
@@ -68,7 +69,7 @@ void cleanup_navigation() {
     free(redo_stack);
 }
 
-void navigate_to(const char* menu_name, void* data) {
+void initialize_current_menu(const char* menu_name, void* data) {
     // Clear redo stack when making new navigation
     clear_stack(redo_stack);
     

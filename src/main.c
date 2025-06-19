@@ -36,11 +36,13 @@ void cleanup();
 
 // Implementation
 int main() {
+    init_navigation();
     init_system();
     load_data();
     main_menu();
     save_data();
     cleanup();
+    cleanup_navigation();
     return 0;
 }
 
@@ -65,11 +67,11 @@ void main_menu() {
         scanf("%s", choice_str);
         
         if (strcmp(choice_str, "1") == 0) {
-            navigate_to(MAIN_MENU, NULL);
+            initialize_current_menu(MAIN_MENU, NULL);
             execute_menu(REGISTER_MENU, NULL);
         }
         else if (strcmp(choice_str, "2") == 0) {
-            navigate_to(MAIN_MENU, NULL);
+            initialize_current_menu(MAIN_MENU, NULL);
             execute_menu(LOGIN_MENU, NULL);
         }
         else if (strcmp(choice_str, "0") == 0) {
@@ -82,7 +84,7 @@ void main_menu() {
             //     return;
             // }
             printf("Thank you for using Courseroom!\n");
-            return;
+            break;
         }
         else if (strcmp(choice_str, "redo") == 0) {
             if (redo_navigation(next_menu, &next_data)) {
