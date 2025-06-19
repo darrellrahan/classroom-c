@@ -981,15 +981,6 @@ void teacher_see_students(Course *course) {
         printf("No previous menu to undo!\n");
         pause_screen();
     }
-
-    if (undo_navigation(next_menu, &next_data)) {
-        execute_menu(next_menu, next_data);
-        return;
-    } else {
-        printf("No previous menu to undo!\n");
-        pause_screen();
-        return;
-    }
 }
 
 void teacher_manage_topics(Course *course) {
