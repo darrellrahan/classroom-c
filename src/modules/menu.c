@@ -108,8 +108,8 @@ void register_menu() {
 
         if (strcmp(choice_str, "1") == 0 || strcmp(choice_str, "teacher") == 0) {
             if(register_teacher()) {
-                navigate_to(TEACHER_DASHBOARD, NULL);
-                execute_menu(TEACHER_DASHBOARD, NULL);
+                navigate_to(LOGIN_MENU, NULL);
+                execute_menu(LOGIN_MENU, NULL);
                 return;
                 // current_teacher = NULL; // Clear current teacher after logout
             }
@@ -123,8 +123,8 @@ void register_menu() {
             }
         } else if (strcmp(choice_str, "2") == 0 || strcmp(choice_str, "student") == 0) {
             if(register_student()) {
-                navigate_to(STUDENT_DASHBOARD, NULL);
-                execute_menu(STUDENT_DASHBOARD, NULL);
+                navigate_to(LOGIN_MENU, NULL);
+                execute_menu(LOGIN_MENU, NULL);
                 return;
                 // current_student = NULL; // clear current student after logout
             }
